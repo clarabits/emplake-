@@ -1,0 +1,90 @@
+{
+  "@@locale": "pt",
+  "appTitle": "Emplake",
+  "groupLabel": "Integrante: Ana Clara Santana Matta",
+  "loginTagline": "Monte equações com os quatro dígitos!",
+  "language": "Idioma",
+  "navGame": "Jogo",
+  "navProgress": "Progresso",
+  "navSettings": "Ajustes",
+  "navHelp": "Ajuda",
+  "levelEasy": "Fácil",
+  "levelMedium": "Intermediário",
+  "levelAdvanced": "Avançado",
+  "levelHard": "Difícil",
+  "yourNumber": "Coordenadas do destino",
+  "formulaLatex": "Fórmula renderizada",
+  "latexPending": "Complete a expressão para ver a fórmula.",
+  "tapSlotHint": "Toque em uma doca entre os planetas e depois em um operador.",
+  "check": "Lançar",
+  "skip": "Pular",
+  "clear": "Limpar",
+  "errSyntax": "Expressão inválida. Confira operadores e parênteses.",
+  "errNoEq": "Use exatamente um sinal de =.",
+  "errDivInt": "Neste nível, só são permitidas divisões inteiras.",
+  "errDivZero": "Divisão por zero.",
+  "errDomain": "Operação fora do domínio (raiz de negativo, fatorial inválido...).",
+  "notEqual": "Não é igual: {left} ≠ {right}",
+  "@notEqual": {
+    "placeholders": {
+      "left": {
+        "type": "String"
+      },
+      "right": {
+        "type": "String"
+      }
+    }
+  },
+  "correct": "Correto! +{points} pontos",
+  "@correct": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "allSolved": "Você resolveu todos os números! 🎉",
+  "loadError": "Erro: {error}",
+  "@loadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "retry": "Tentar de novo",
+  "progressTitle": "Seu progresso",
+  "scoreLabel": "Pontuação: {score}",
+  "@scoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "solvedCount": "Números resolvidos: {count}",
+  "@solvedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noneSolved": "Nenhum número resolvido ainda.",
+  "settingsTitle": "Configurações",
+  "themeMode": "Tema",
+  "themeSystem": "Sistema",
+  "themeLight": "Claro",
+  "themeDark": "Escuro",
+  "fontSize": "Tamanho da fonte",
+  "fontFamily": "Tipo da fonte",
+  "seedColor": "Cor do tema",
+  "sound": "Som",
+  "soundDesc": "Efeitos sonoros (desligado por padrão)",
+  "signOut": "Sair da conta",
+  "helpTitle": "Como jogar",
+  "close": "Fechar",
+  "helpBody": "Os 4 dígitos do número são planetas fixos, em ordem, na rota.\n\nToque em uma doca (entre os planetas) e depois em um operador para colocá-lo ali. Toque em uma ficha já colocada para removê-la.\n\nUse o sinal = exatamente uma vez. Planetas vizinhos sem operador entre eles formam um número maior (1 e 2 viram 12).\n\nFunções como √( e floor( abrem um parêntese: feche com ).\n\nFácil permite divisão não inteira; nos demais níveis, só divisões exatas.\n\nPontos: Fácil 1, Intermediário 2, Avançado 3, Difícil 5.",
+  "music": "Música de fundo",
+  "musicDesc": "Trilha ambiente espacial (desligada por padrão)"
+}

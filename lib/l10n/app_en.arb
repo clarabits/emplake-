@@ -1,0 +1,90 @@
+{
+  "@@locale": "en",
+  "appTitle": "Emplake",
+  "groupLabel": "Member: Ana Clara Santana Matta",
+  "loginTagline": "Build equations with the four digits!",
+  "language": "Language",
+  "navGame": "Game",
+  "navProgress": "Progress",
+  "navSettings": "Settings",
+  "navHelp": "Help",
+  "levelEasy": "Easy",
+  "levelMedium": "Intermediate",
+  "levelAdvanced": "Advanced",
+  "levelHard": "Hard",
+  "yourNumber": "Destination coordinates",
+  "formulaLatex": "Rendered formula",
+  "latexPending": "Complete the expression to see the formula.",
+  "tapSlotHint": "Tap a dock between the planets, then tap an operator.",
+  "check": "Launch",
+  "skip": "Skip",
+  "clear": "Clear",
+  "errSyntax": "Invalid expression. Check operators and parentheses.",
+  "errNoEq": "Use exactly one = sign.",
+  "errDivInt": "At this level, only integer division is allowed.",
+  "errDivZero": "Division by zero.",
+  "errDomain": "Operation out of domain (root of a negative, invalid factorial...).",
+  "notEqual": "Not equal: {left} ≠ {right}",
+  "@notEqual": {
+    "placeholders": {
+      "left": {
+        "type": "String"
+      },
+      "right": {
+        "type": "String"
+      }
+    }
+  },
+  "correct": "Correct! +{points} points",
+  "@correct": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "allSolved": "You solved every number! 🎉",
+  "loadError": "Error: {error}",
+  "@loadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "retry": "Try again",
+  "progressTitle": "Your progress",
+  "scoreLabel": "Score: {score}",
+  "@scoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "solvedCount": "Solved numbers: {count}",
+  "@solvedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noneSolved": "No solved numbers yet.",
+  "settingsTitle": "Settings",
+  "themeMode": "Theme",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "fontSize": "Font size",
+  "fontFamily": "Font family",
+  "seedColor": "Theme color",
+  "sound": "Sound",
+  "soundDesc": "Sound effects (off by default)",
+  "signOut": "Sign out",
+  "helpTitle": "How to play",
+  "close": "Close",
+  "helpBody": "The 4 digits of the number are fixed planets, in order, along the route.\n\nTap a dock (between the planets), then tap an operator to place it there. Tap a placed token to remove it.\n\nUse the = sign exactly once. Neighboring planets with no operator between them form a larger number (1 and 2 become 12).\n\nFunctions like √( and floor( open a parenthesis: close it with ).\n\nEasy allows non-integer division; other levels allow exact division only.\n\nPoints: Easy 1, Intermediate 2, Advanced 3, Hard 5.",
+  "music": "Background music",
+  "musicDesc": "Space ambient soundtrack (off by default)"
+}
