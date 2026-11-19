@@ -191,7 +191,7 @@ abstract class AppLocalizations {
   /// No description provided for @tapSlotHint.
   ///
   /// In pt, this message translates to:
-  /// **'Toque em uma doca entre os planetas e depois em um operador.'**
+  /// **'Toque onde quer inserir (a barrinha piscando mostra o ponto) e escolha uma ficha. Use Apagar para remover.'**
   String get tapSlotHint;
 
   /// No description provided for @check.
@@ -391,6 +391,24 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Trilha ambiente espacial (desligada por padrão)'**
   String get musicDesc;
+
+  /// No description provided for @backspace.
+  ///
+  /// In pt, this message translates to:
+  /// **'Apagar'**
+  String get backspace;
+
+  /// No description provided for @nextNumber.
+  ///
+  /// In pt, this message translates to:
+  /// **'Próximo Número'**
+  String get nextNumber;
+
+  /// No description provided for @signUpHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Primeira vez aqui? Toque em “Inscrever-se” para criar sua conta.'**
+  String get signUpHint;
 }
 
 class _AppLocalizationsDelegate

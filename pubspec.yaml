@@ -53,6 +53,7 @@ dependencies:
   material_ui: ^1.10.0
   audioplayers: ^6.8.1
 
+  cupertino_ui: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -56,7 +56,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get tapSlotHint =>
-      'Toque em uma doca entre os planetas e depois em um operador.';
+      'Toque onde quer inserir (a barrinha piscando mostra o ponto) e escolha uma ficha. Use Apagar para remover.';
 
   @override
   String get check => 'Lançar';
@@ -169,4 +169,14 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get musicDesc => 'Trilha ambiente espacial (desligada por padrão)';
+
+  @override
+  String get backspace => 'Apagar';
+
+  @override
+  String get nextNumber => 'Próximo Número';
+
+  @override
+  String get signUpHint =>
+      'Primeira vez aqui? Toque em “Inscrever-se” para criar sua conta.';
 }

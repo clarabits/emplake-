@@ -56,7 +56,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tapSlotHint =>
-      'Tap a dock between the planets, then tap an operator.';
+      'Tap where you want to insert (the blinking bar shows the spot) and pick a token. Use Delete to remove.';
 
   @override
   String get check => 'Launch';
@@ -169,4 +169,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get musicDesc => 'Space ambient soundtrack (off by default)';
+
+  @override
+  String get backspace => 'Delete';
+
+  @override
+  String get nextNumber => 'Next Number';
+
+  @override
+  String get signUpHint =>
+      'First time here? Tap “Register” to create your account.';
 }

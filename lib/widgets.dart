@@ -20,8 +20,8 @@ class Loader extends StatelessWidget {
 }
 
 String tokenLabel(String t) => switch (t) {
-      'sqrt(' => '√(',
-      'cbrt(' => '∛(',
+      'sqrt' => '√',
+      'cbrt' => '∛',
       _ => t,
     };
 

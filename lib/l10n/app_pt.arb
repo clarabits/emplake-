@@ -15,7 +15,7 @@
   "yourNumber": "Coordenadas do destino",
   "formulaLatex": "Fórmula renderizada",
   "latexPending": "Complete a expressão para ver a fórmula.",
-  "tapSlotHint": "Toque em uma doca entre os planetas e depois em um operador.",
+  "tapSlotHint": "Toque onde quer inserir (a barrinha piscando mostra o ponto) e escolha uma ficha. Use Apagar para remover.",
   "check": "Lançar",
   "skip": "Pular",
   "clear": "Limpar",
@@ -86,5 +86,8 @@
   "close": "Fechar",
   "helpBody": "Os 4 dígitos do número são planetas fixos, em ordem, na rota.\n\nToque em uma doca (entre os planetas) e depois em um operador para colocá-lo ali. Toque em uma ficha já colocada para removê-la.\n\nUse o sinal = exatamente uma vez. Planetas vizinhos sem operador entre eles formam um número maior (1 e 2 viram 12).\n\nFunções como √( e floor( abrem um parêntese: feche com ).\n\nFácil permite divisão não inteira; nos demais níveis, só divisões exatas.\n\nPontos: Fácil 1, Intermediário 2, Avançado 3, Difícil 5.",
   "music": "Música de fundo",
-  "musicDesc": "Trilha ambiente espacial (desligada por padrão)"
+  "musicDesc": "Trilha ambiente espacial (desligada por padrão)",
+  "backspace": "Apagar",
+  "nextNumber": "Próximo Número",
+  "signUpHint": "Primeira vez aqui? Toque em “Inscrever-se” para criar sua conta."
 }

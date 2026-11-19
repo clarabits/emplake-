@@ -15,7 +15,7 @@
   "yourNumber": "Destination coordinates",
   "formulaLatex": "Rendered formula",
   "latexPending": "Complete the expression to see the formula.",
-  "tapSlotHint": "Tap a dock between the planets, then tap an operator.",
+  "tapSlotHint": "Tap where you want to insert (the blinking bar shows the spot) and pick a token. Use Delete to remove.",
   "check": "Launch",
   "skip": "Skip",
   "clear": "Clear",
@@ -86,5 +86,8 @@
   "close": "Close",
   "helpBody": "The 4 digits of the number are fixed planets, in order, along the route.\n\nTap a dock (between the planets), then tap an operator to place it there. Tap a placed token to remove it.\n\nUse the = sign exactly once. Neighboring planets with no operator between them form a larger number (1 and 2 become 12).\n\nFunctions like √( and floor( open a parenthesis: close it with ).\n\nEasy allows non-integer division; other levels allow exact division only.\n\nPoints: Easy 1, Intermediate 2, Advanced 3, Hard 5.",
   "music": "Background music",
-  "musicDesc": "Space ambient soundtrack (off by default)"
+  "musicDesc": "Space ambient soundtrack (off by default)",
+  "backspace": "Delete",
+  "nextNumber": "Next Number",
+  "signUpHint": "First time here? Tap “Register” to create your account."
 }

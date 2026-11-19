@@ -4,10 +4,10 @@ enum Level { easy, medium, advanced, hard }
 
 extension LevelX on Level {
   List<String> get tokens => switch (this) {
-        Level.easy => ['+', '-', '*', '/', '(', ')', 'sqrt(', 'cbrt(', '!', '**', 'abs(', 'floor(', 'ceil(', '='],
-        Level.medium => ['+', '-', '*', '/', '(', ')', 'sqrt(', 'cbrt(', '!', '**', 'abs(', '='],
-        Level.advanced => ['+', '-', '*', '/', '(', ')', 'sqrt(', '!', 'abs(', '='],
-        Level.hard => ['+', '-', '*', '/', '(', ')', 'abs(', '='],
+        Level.easy => ['+', '-', '*', '/', '(', ')', 'sqrt', 'cbrt', '!', '**', '|', '⌊', '⌋', '⌈', '⌉', '='],
+        Level.medium => ['+', '-', '*', '/', '(', ')', 'sqrt', 'cbrt', '!', '**', '|', '='],
+        Level.advanced => ['+', '-', '*', '/', '(', ')', 'sqrt', '!', '|', '='],
+        Level.hard => ['+', '-', '*', '/', '(', ')', '|', '='],
       };
   bool get allowFractions => this == Level.easy;
   int get points => const [1, 2, 3, 5][index];
@@ -125,10 +125,12 @@ class Func extends Node {
     throw GameError(GameErrorKind.syntax);
   }
 
+  String get _inner => a is Paren ? (a as Paren).a.tex() : a.tex();
+
   @override
   String tex() => switch (name) {
-        'sqrt' => '\\sqrt{${a.tex()}}',
-        'cbrt' => '\\sqrt[3]{${a.tex()}}',
+        'sqrt' => '\\sqrt{$_inner}',
+        'cbrt' => '\\sqrt[3]{$_inner}',
         'abs' => '\\left|${a.tex()}\\right|',
         'floor' => '\\left\\lfloor ${a.tex()}\\right\\rfloor',
         _ => '\\left\\lceil ${a.tex()}\\right\\rceil',
@@ -177,8 +179,14 @@ class Bin extends Node {
 }
 
 // ---------------------------------------------------------------- Parser
-// expr := term (('+'|'-') term)* ; term := unary (('*'|'/') unary)*
-// unary := '-' unary | power ; power := postfix ('**' unary)? ; postfix := primary '!'*
+// Precedência (igual ao aplicativo original):
+//   expr  := term (('+'|'-') term)*             + e - binários: menor precedência
+//   term  := neg (('*'|'/') neg)*               * e / ganham de + e -
+//   neg   := '-' neg | power                    - unário vale só para o que vem depois dele
+//   power := post ('**' neg)?
+//   post  := root '!'*                          ! vale só para o que vem antes dele
+//   root  := ('sqrt'|'cbrt') root | atom        raiz vale só para o número à frente (ou parênteses)
+//   atom  := número | '(' expr ')' | '|' expr '|' | '⌊' expr '⌋' | '⌈' expr '⌉'
 class _Parser {
   final List<String> t;
   int i = 0;
@@ -203,33 +211,33 @@ class _Parser {
   }
 
   Node _term() {
-    var n = _unary();
+    var n = _neg();
     while (_peek == '*' || _peek == '/') {
       final op = t[i++];
-      n = Bin(op, n, _unary());
+      n = Bin(op, n, _neg());
     }
     return n;
   }
 
-  Node _unary() {
+  Node _neg() {
     if (_peek == '-') {
       i++;
-      return Neg(_unary());
+      return Neg(_neg());
     }
     return _power();
   }
 
   Node _power() {
-    final b = _postfix();
+    final b = _post();
     if (_peek == '**') {
       i++;
-      return Bin('**', b, _unary());
+      return Bin('**', b, _neg());
     }
     return b;
   }
 
-  Node _postfix() {
-    var n = _primary();
+  Node _post() {
+    var n = _root();
     while (_peek == '!') {
       i++;
       n = Fact(n);
@@ -237,12 +245,21 @@ class _Parser {
     return n;
   }
 
+  Node _root() {
+    final s = _peek;
+    if (s == 'sqrt' || s == 'cbrt') {
+      i++;
+      return Func(s!, _root());
+    }
+    return _atom();
+  }
+
   void _expect(String s) {
     if (_peek != s) throw _err;
     i++;
   }
 
-  Node _primary() {
+  Node _atom() {
     final s = _peek;
     if (s == null) throw _err;
     i++;
@@ -250,15 +267,23 @@ class _Parser {
       if (s.length > 1 && s.startsWith('0')) throw _err;
       return Num(s);
     }
-    if (s == '(') {
-      final n = _expr();
-      _expect(')');
-      return Paren(n);
-    }
-    if (s.length > 1 && s.endsWith('(')) {
-      final n = _expr();
-      _expect(')');
-      return Func(s.substring(0, s.length - 1), n);
+    switch (s) {
+      case '(':
+        final n = _expr();
+        _expect(')');
+        return Paren(n);
+      case '|':
+        final n = _expr();
+        _expect('|');
+        return Func('abs', n);
+      case '⌊':
+        final n = _expr();
+        _expect('⌋');
+        return Func('floor', n);
+      case '⌈':
+        final n = _expr();
+        _expect('⌉');
+        return Func('ceil', n);
     }
     throw _err;
   }

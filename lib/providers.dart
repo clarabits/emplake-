@@ -90,11 +90,12 @@ class LevelNotifier extends Notifier<Level> {
 final levelProvider = NotifierProvider<LevelNotifier, Level>(LevelNotifier.new);
 
 class BoardState {
-  final List<List<String>> slots; // 5 encaixes: antes/entre/depois dos 4 dígitos
-  final int selected;
+  final List<List<String>> slots; // 5 docas: antes/entre/depois dos 4 dígitos
+  final int slot; // doca onde está o cursor
+  final int index; // posição do cursor dentro da doca (0..tamanho)
   final bool returning; // true durante a animação de "voltar para a paleta"
-  BoardState(this.slots, this.selected, this.returning);
-  factory BoardState.empty() => BoardState(List.generate(5, (_) => <String>[]), 0, false);
+  BoardState(this.slots, this.slot, this.index, this.returning);
+  factory BoardState.empty() => BoardState(List.generate(5, (_) => <String>[]), 0, 0, false);
   bool get hasEq => slots.any((s) => s.contains('='));
 }
 
@@ -104,23 +105,39 @@ class BoardNotifier extends Notifier<BoardState> {
 
   List<List<String>> _copy() => [for (final s in state.slots) [...s]];
 
-  void select(int i) => state = BoardState(state.slots, i, false);
+  /// Move o cursor. Sem [index], vai para o fim da doca.
+  void select(int slot, [int? index]) =>
+      state = BoardState(state.slots, slot, index ?? state.slots[slot].length, false);
 
+  /// Insere a ficha NA POSIÇÃO DO CURSOR (pode ser entre duas fichas já colocadas).
   void add(String t) {
     if (state.returning || (t == '=' && state.hasEq)) return;
     final c = _copy();
-    c[state.selected].add(t);
-    state = BoardState(c, state.selected, false);
+    final i = state.index.clamp(0, c[state.slot].length);
+    c[state.slot].insert(i, t);
+    state = BoardState(c, state.slot, i + 1, false);
   }
 
-  void removeAt(int slot, int idx) {
+  /// Apaga a ficha logo antes do cursor (como a tecla Backspace).
+  void backspace() {
     if (state.returning) return;
     final c = _copy();
-    c[slot].removeAt(idx);
-    state = BoardState(c, state.selected, false);
+    var s = state.slot;
+    var i = state.index.clamp(0, c[s].length);
+    if (i == 0) {
+      var p = s - 1;
+      while (p >= 0 && c[p].isEmpty) {
+        p--;
+      }
+      if (p < 0) return;
+      s = p;
+      i = c[s].length;
+    }
+    c[s].removeAt(i - 1);
+    state = BoardState(c, s, i - 1, false);
   }
 
-  void startReturn() => state = BoardState(state.slots, state.selected, true);
+  void startReturn() => state = BoardState(state.slots, state.slot, state.index, true);
   void clear() => state = BoardState.empty();
 }
 

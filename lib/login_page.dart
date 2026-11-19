@@ -1,7 +1,7 @@
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 // O formulário do firebase_ui_auth usa o Material ANTIGO; por isso o tema dele é aplicado com o prefixo `old`.
-import 'package:flutter/material.dart' as old;
+import 'package:material_ui/material_ui.dart' as old;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -83,6 +83,7 @@ class LoginPage extends StatelessWidget {
               footerBuilder: (context, _) => Padding(
                 padding: const EdgeInsets.only(top: 24),
                 child: Column(children: [
+                  Text(l.signUpHint, textAlign: TextAlign.center, style: tt.bodyMedium),
                   Text(l.language, style: tt.labelMedium),
                   const SizedBox(height: 6),
                   const LanguagePicker(),

@@ -66,6 +66,43 @@ class _PlayfieldState extends ConsumerState<_Playfield> {
         GameErrorKind.domain => l.errDomain,
       };
 
+  void _add(String t) {
+    ref.read(boardProvider.notifier).add(t);
+    playSfx(ref, Sfx.click);
+    if (_msg != null) setState(() => _msg = null);
+  }
+
+  void _backspace() {
+    ref.read(boardProvider.notifier).backspace();
+    playSfx(ref, Sfx.click);
+    if (_msg != null) setState(() => _msg = null);
+  }
+
+  Future<void> _showSuccess(AppLocalizations l, int points) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) {
+        final cs = Theme.of(ctx).colorScheme;
+        return Dialog(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 380),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                Icon(Icons.rocket_launch, size: 56, color: cs.primary),
+                const SizedBox(height: 12),
+                Text(l.correct(points), textAlign: TextAlign.center, style: Theme.of(ctx).textTheme.titleLarge),
+                const SizedBox(height: 20),
+                FilledButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(l.nextNumber)),
+              ]),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void _setLevel(Level v) {
     ref.read(levelProvider.notifier).set(v);
     ref.read(boardProvider.notifier).clear();
@@ -81,7 +118,6 @@ class _PlayfieldState extends ConsumerState<_Playfield> {
 
   Future<void> _check(List<String> tokens, Level level) async {
     final l = AppLocalizations.of(context)!;
-    final messenger = ScaffoldMessenger.of(context);
     setState(() {
       _busy = true;
       _msg = null;
@@ -92,17 +128,17 @@ class _PlayfieldState extends ConsumerState<_Playfield> {
         await ref.read(repoProvider).markSolved(FirebaseAuth.instance.currentUser!.uid, widget.number, level.points);
         if (!mounted) return;
         playSfx(ref, Sfx.success);
-        messenger.showSnackBar(SnackBar(content: Text(l.correct(level.points))));
-        ref.read(boardProvider.notifier).startReturn();
-        setState(() => _launching = true); // foguete decola!
         playSfx(ref, Sfx.launch);
-        await Future.delayed(const Duration(milliseconds: 950));
+        setState(() => _launching = true); // foguete decola!
+        await Future.delayed(const Duration(milliseconds: 1300));
+        if (!mounted) return;
+        await _showSuccess(l, level.points); // só segue quando o jogador clicar
         if (!mounted) return;
         ref.read(numberProvider.notifier).next();
       } else {
         playSfx(ref, Sfx.error);
+        // As fichas continuam onde estavam: o jogador corrige a partir dali.
         setState(() => _msg = l.notEqual(fmtNum(r.left), fmtNum(r.right)));
-        await _returnAndClear();
       }
     } on GameError catch (e) {
       if (!mounted) return;
@@ -189,12 +225,7 @@ class _PlayfieldState extends ConsumerState<_Playfield> {
         for (final t in level.tokens)
           FilledButton.tonal(
             style: FilledButton.styleFrom(minimumSize: const Size(56, 48)),
-            onPressed: (t == '=' && board.hasEq)
-                ? null
-                : () {
-                    notifier.add(t);
-                    playSfx(ref, Sfx.click);
-                  },
+            onPressed: (t == '=' && board.hasEq) ? null : () => _add(t),
             child: Text(tokenLabel(t), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
           ),
       ]),
@@ -203,6 +234,7 @@ class _PlayfieldState extends ConsumerState<_Playfield> {
     final actions = Wrap(spacing: 12, runSpacing: 8, alignment: WrapAlignment.center, children: [
       FilledButton.icon(
           onPressed: _busy ? null : () => _check(tokens, level), icon: const Icon(Icons.rocket_launch), label: Text(l.check)),
+      OutlinedButton.icon(onPressed: _busy ? null : _backspace, icon: const Icon(Icons.backspace_outlined), label: Text(l.backspace)),
       OutlinedButton.icon(onPressed: _busy ? null : _returnAndClear, icon: const Icon(Icons.restart_alt), label: Text(l.clear)),
       TextButton.icon(
           onPressed: _busy ? null : () => ref.read(numberProvider.notifier).next(skip: widget.number),
@@ -260,36 +292,79 @@ class _PlayfieldState extends ConsumerState<_Playfield> {
     );
   }
 
+  /// Ponto de inserção: toque para colocar o cursor (barrinha piscando) naquela posição.
+  Widget _gap(int slot, int k, bool active, bool alone, BoardNotifier n, ColorScheme cs) => InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => n.select(slot, k),
+        child: SizedBox(
+          width: alone ? 30 : 14,
+          height: 40,
+          child: Center(
+            child: active
+                ? _Caret(color: cs.primary)
+                : alone
+                    ? Container(width: 6, height: 6, decoration: BoxDecoration(shape: BoxShape.circle, color: cs.outline.withValues(alpha: .7)))
+                    : null,
+          ),
+        ),
+      );
+
   Widget _dock(int i, BoardState board, BoardNotifier n, ColorScheme cs) {
-    final sel = board.selected == i;
+    final sel = board.slot == i;
     final toks = board.slots[i];
-    return InkWell(
-      borderRadius: BorderRadius.circular(19),
+    final kids = <Widget>[];
+    for (var k = 0; k <= toks.length; k++) {
+      kids.add(_gap(i, k, sel && board.index == k, toks.isEmpty, n, cs));
+      if (k < toks.length) {
+        kids.add(_TokenChip(
+          key: ValueKey('$i-$k-${toks[k]}'),
+          label: tokenLabel(toks[k]),
+          returning: board.returning,
+          onTap: () => n.select(i, k + 1), // tocar numa ficha põe o cursor logo depois dela
+        ));
+      }
+    }
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () => n.select(i),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        constraints: const BoxConstraints(minWidth: 38, minHeight: 38),
-        padding: const EdgeInsets.all(4),
+        constraints: const BoxConstraints(minHeight: 44),
+        padding: const EdgeInsets.symmetric(horizontal: 2),
         decoration: BoxDecoration(
           color: sel ? cs.primaryContainer.withValues(alpha: .8) : cs.surfaceContainerHighest.withValues(alpha: .35),
           borderRadius: BorderRadius.circular(19),
           border: Border.all(color: sel ? cs.primary : cs.outlineVariant, width: sel ? 2 : 1),
           boxShadow: sel ? [BoxShadow(color: cs.primary.withValues(alpha: .6), blurRadius: 14)] : null,
         ),
-        child: toks.isEmpty
-            ? Icon(Icons.add, size: 16, color: cs.outline)
-            : Row(mainAxisSize: MainAxisSize.min, children: [
-                for (var k = 0; k < toks.length; k++)
-                  _TokenChip(
-                    key: ValueKey('$i-$k-${toks[k]}'),
-                    label: tokenLabel(toks[k]),
-                    returning: board.returning,
-                    onTap: () => n.removeAt(i, k),
-                  ),
-              ]),
+        child: Row(mainAxisSize: MainAxisSize.min, children: kids),
       ),
     );
   }
+}
+
+/// Cursor piscando: mostra exatamente onde a próxima ficha vai entrar.
+class _Caret extends StatefulWidget {
+  final Color color;
+  const _Caret({required this.color});
+  @override
+  State<_Caret> createState() => _CaretState();
+}
+
+class _CaretState extends State<_Caret> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 600))..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => FadeTransition(
+        opacity: Tween<double>(begin: .25, end: 1).animate(_c),
+        child: Container(width: 3, height: 26, decoration: BoxDecoration(color: widget.color, borderRadius: BorderRadius.circular(2))),
+      );
 }
 
 /// Planeta flutuando suavemente (cada um com uma fase diferente).
